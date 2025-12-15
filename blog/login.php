@@ -1,5 +1,10 @@
 
 <?php
+session_start();
+require 'connection.php';
+// $_SESSION['email'] = 'abc@gmail.com';
+// $_SESSION['password'] = 'abcd';
+
 
 if (isset($_POST['submit'])) {
     $email = $_POST['email'];
@@ -12,6 +17,32 @@ if (isset($_POST['submit'])) {
     if(empty($password)){
         $message = "Please enter your password";
         $messageType = 'error';
+    }
+
+    // if ($email === $_SESSION['email'] && $password === $_SESSION['password']) {
+    //   $_SESSION['isLogin'] = true;
+    //   header("Location: dashboard.php");
+    //   exit;
+    // }else{
+    //   $message = "Invalid Email and Password";
+    // }
+
+    $sql = "SELECT * FROM users WHERE email = '$email'";
+    $result = mysqli_query($conn, $sql);
+    //$result = $conn->query($sql);
+    
+    // check the record 
+    if(mysqli_num_rows($result)>0){
+      $user = mysqli_fetch_assoc($result);
+      if(password_verify($password, $user['password'])){
+        $_SESSION['userId'] = $user['user_id'];
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['name'] = $user['fullname'];
+        $_SESSION['isLogin'] = true;
+        header("Location: dashboard.php");
+      }
+    }else{
+      $message = "Email and Password does not match";
     }
 }
 
@@ -26,32 +57,7 @@ if (isset($_POST['submit'])) {
   </head>
   <body> 
 
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container">
-    <a class="navbar-brand" href="#">Logo</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="index.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="blog.php">Blog</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="about.php">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="contact.php">Contact</a>
-        </li>
-      </ul>
-        <a href="register.php" class="btn btn-primary me-2">Register</a>
-        <a href="login.php" class="btn btn-outline-primary">Login</a>
-    </div>
-  </div>
-</nav>
+    <?php  include 'include/navbar.php';   ?>
 
 <div class="container">
     <nav aria-label="breadcrumb" class="my-4">

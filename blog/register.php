@@ -1,10 +1,13 @@
 <?php
+require 'connection.php';
 
 if (isset($_POST['submit'])) {
     $fullName = $_POST['fullname'];
     $number = $_POST['number'];
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
 
     if(empty($fullName)){
         $message = "Please enter your full name";
@@ -22,6 +25,16 @@ if (isset($_POST['submit'])) {
         $message = "Please enter your password";
         $messageType = 'error';
     }
+
+    $sql = "INSERT INTO users (fullname, email, password, status, phone) VALUES ('$fullName', '$email', '$hashed_password', 1, '$number')";
+
+    if ($conn->query($sql) === TRUE) {
+      $message = "User Registered Successfully.";
+      $messageType = 'success';
+    }else {
+      echo "Error: ". $conn->error;
+    }
+
 }
 
 ?>
@@ -31,37 +44,12 @@ if (isset($_POST['submit'])) {
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login - Blog</title>
+    <title>Register - Blog</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body> 
 
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container">
-    <a class="navbar-brand" href="#">Logo</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="index.php">Home</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="blog.php">Blog</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="about.php">About</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" aria-current="page" href="contact.php">Contact</a>
-        </li>
-      </ul>
-        <a href="register.php" class="btn btn-primary me-2">Register</a>
-        <a href="login.php" class="btn btn-outline-primary">Login</a>
-    </div>
-  </div>
-</nav>
+    <?php  include 'include/navbar.php';   ?>
 
 <div class="container">
     <nav aria-label="breadcrumb" class="my-4">
