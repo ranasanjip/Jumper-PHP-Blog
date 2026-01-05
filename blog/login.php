@@ -70,7 +70,7 @@ if (isset($_POST['submit'])) {
     </nav>
     <div class="row">
         <div class="col-lg-6 my-auto">
-          <?php if (!empty($message)) { ?>
+            <?php if (!empty($message)) { ?>
                 <div class="alert alert-danger">
                     <?= $message ?>
                 </div>
