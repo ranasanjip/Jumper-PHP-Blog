@@ -9,12 +9,25 @@
     if(isset($_POST['save'])){
         $name  = $_POST['name'];
         $slug  = $_POST['slug'];
+        $image = $_FILES['image'];
 
-        if(empty($name) && empty($slug)){
-            $message = "Please enter name and slug";
-            $messageType = 'error';
+        if(empty($name) || empty($slug) || $_FILES['image']['error'] == 4){
+            $message = "All Fields Required";
+            $messageType = 'danger';
         }else{
-            $sql = "INSERT INTO categories (name,slug) VALUES('$name', '$slug')";
+            // Image upload handling
+            $imageName = time() . "_" . basename($_FILES['image']['name']);
+            $target_dir = "uploads/category/";
+            $target_file = $target_dir . $imageName;
+
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+                $sql = "INSERT INTO categories (name, slug, image)
+                        VALUES ('$name', '$slug', '$imageName')";
+            } else {
+                $message = "Image upload failed";
+                $messageType = "error";
+            }
+
             if ($conn->query($sql) === TRUE) {
                 $message = "Category Created Successfully.";
                 $messageType = 'success';
@@ -41,6 +54,10 @@
     <div class="row">
         <?php  include 'include/sidebar.php'; ?>
         <div class="col-lg-9">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h3>Create Category</h3>
+                <a href="category-list.php" class="btn btn-primary">All Category</a>
+            </div>
             <?php if (!empty($message)) { ?>
                 <div class="alert alert-<?= $messageType ?>">
                     <?= $message ?>
@@ -48,7 +65,7 @@
             <?php } ?>
             <div class="card">
                 <div class="card-body">
-                    <form action="category-create.php" method="post">
+                    <form action="category-create.php" method="post" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" name="name" placeholder="Category Name">

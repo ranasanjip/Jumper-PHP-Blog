@@ -26,9 +26,11 @@
     <div class="row">
         <?php  include 'include/sidebar.php';   ?>
         <div class="col-lg-9">
-            <a href="category-create.php" class="btn btn-primary">Create Category</a>
-
-            <table class="table">
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <h3>Category List</h3>
+                <a href="category-create.php" class="btn btn-primary">Create Category</a>
+            </div>
+            <table class="table table-bordered">
                 <thead>
                     <tr>
                         <th scope="col">#</th>
@@ -47,7 +49,9 @@
                     ?>
                     <tr>
                         <th scope="row"><?= $i++ ?></th>
-                        <td><?= $category['image'] ?></td>
+                        <td>
+                            <img width="100" src="uploads/category/<?= $category['image'] ?>" alt="">
+                        </td>
                         <td><?= $category['name'] ?></td>
                         <td><?= $category['slug'] ?></td>
                         <td>
