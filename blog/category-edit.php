@@ -9,24 +9,36 @@
     $catId = $_GET['id'];
     $selectQuery = "SELECT * FROM categories WHERE id='$catId'";
     $result = mysqli_query($conn, $selectQuery);
-    
     $category = mysqli_fetch_assoc($result);
-    
 
-    if(isset($_POST['save'])){
+    if(isset($_POST['update'])){
         $name  = $_POST['name'];
         $slug  = $_POST['slug'];
+        $image = $_FILES['image'];
 
         if(empty($name) && empty($slug)){
             $message = "Please enter name and slug";
             $messageType = 'error';
         }else{
-            $sql = "INSERT INTO categories (name,slug) VALUES('$name', '$slug')";
-            if ($conn->query($sql) === TRUE) {
-                $message = "Category Created Successfully.";
-                $messageType = 'success';
-            }else {
-                echo "Error: ". $conn->error;
+            if($_FILES['image']['error'] == 0){
+                $oldImageName = $category['image'];
+                $oldImagePath = "uploads/category/" . $oldImageName;
+                if (!empty($oldImageName) && file_exists($oldImagePath)) {
+                    unlink($oldImagePath);
+                }
+
+                $imageName = time() . "_" . basename($_FILES['image']['name']);
+                $target_dir = "uploads/category/";
+                $target_file = $target_dir . $imageName;
+                move_uploaded_file($_FILES['image']['tmp_name'], $target_file);
+            
+                $sql = "UPDATE categories SET name = '$name', slug = '$slug', image = '$imageName' WHERE id = '$catId'";
+                if ($conn->query($sql) === TRUE) {
+                    $message = "Category Updated Successfully.";
+                    $messageType = 'success';
+                }else {
+                    echo "Error: ". $conn->error;
+                }
             }
         }
     }
@@ -55,7 +67,7 @@
             <?php } ?>
             <div class="card">
                 <div class="card-body">
-                    <form action="category-create.php" method="post">
+                    <form action="category-edit.php?id=<?=$catId?>" method="post" enctype="multipart/form-data">
                         <div class="mb-3">
                             <label for="name">Name</label>
                             <input type="text" class="form-control" name="name" 
@@ -69,7 +81,7 @@
                             <label for="image">Image</label>
                             <input type="file" class="form-control" name="image" placeholder="Category Image">
                         </div>
-                        <input type="submit" value="Save" class="btn btn-primary" name="save">
+                        <input type="submit" value="Update" class="btn btn-primary" name="update">
                     </form>
                 </div>
             </div>
