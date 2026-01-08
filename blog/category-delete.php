@@ -4,7 +4,7 @@ $catId = $_GET['id'];
 
 $selectQuery = "SELECT id,image FROM categories WHERE id='$catId'";
 $result = mysqli_query($conn, $selectQuery);
-if (mysqli_num_rows($result)>0) {
+if (mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
     $imageName = $row['image'];
     $imagePath = "uploads/category/" . $imageName;
@@ -16,10 +16,9 @@ if (mysqli_num_rows($result)>0) {
         echo "Category Deleted Successfully.";
         header("Location: category-list.php");
     }
-}else{
+} else {
     echo "Category not found.";
 }
 
-
-
-?>
+// Close DB connection
+$conn->close();

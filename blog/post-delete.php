@@ -4,7 +4,7 @@ $postId = $_GET['id'];
 
 $selectQuery = "SELECT id,image FROM posts WHERE id='$postId'";
 $result = mysqli_query($conn, $selectQuery);
-if (mysqli_num_rows($result)>0) {
+if (mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
     $imageName = $row['image'];
     $imagePath = "uploads/post/" . $imageName;
@@ -16,10 +16,9 @@ if (mysqli_num_rows($result)>0) {
         echo "Post Deleted Successfully.";
         header("Location: post-list.php");
     }
-}else{
+} else {
     echo "Post not found.";
 }
 
-
-
-?>
+// Close DB connection
+$conn->close();
