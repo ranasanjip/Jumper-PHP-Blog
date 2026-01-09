@@ -6,11 +6,8 @@ if (!isset($_SESSION['isLogin']) == true) {
     exit;
 }
 
-$sql = "SELECT * FROM categories ORDER BY id DESC";
-$results = mysqli_query($conn, $sql);
-
-// Close DB connection
-$conn->close();
+    $sql = "SELECT * FROM categories ORDER BY id DESC";
+    $results = mysqli_query($conn, $sql);
 ?>
 
 <!DOCTYPE html>
